@@ -4,4 +4,4 @@ faiss-cpu
 torch
 transformers
 sentence-transformers
-sqlite3
+
