@@ -1,8 +1,8 @@
 import os
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import FAISS
-from langchain.embeddings import HuggingFaceEmbeddings
 from transformers import pipeline
+from langchain_community.vectorstores import FAISS  # Changed import
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings import HuggingFaceEmbeddings
 
 class SpaceRAG:
     def __init__(self, data_dir="sample_data"):
