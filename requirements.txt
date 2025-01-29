@@ -1,6 +1,7 @@
 streamlit
+chromadb
+faiss-cpu
 torch
 transformers
 sentence-transformers
-faiss-cpu
-chromadb
+sqlite3
