@@ -1,0 +1,5 @@
+Astronomy is the scientific study of celestial objects and phenomena that originate outside Earth's atmosphere. 
+It includes the study of stars, planets, galaxies, and cosmic phenomena like supernovae explosions and black holes. 
+Modern astronomy is divided into observational and theoretical branches. 
+Observational astronomy focuses on acquiring data from observations, 
+while theoretical astronomy uses computational models to explain these observations.
