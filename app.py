@@ -1,7 +1,7 @@
 import streamlit as st
 import faiss
 import torch
-from transformeimport streamlit as st
+from transformer 
 from rag_pipeline import SpaceRAG
 import time
 
