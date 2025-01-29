@@ -4,5 +4,5 @@ faiss-cpu==1.7.4
 torch>=2.2.0
 transformers==4.37.2
 langchain==0.1.0
-langchain-community==0.0.29  # Add this
+langchain-community==0.0.29
 python-dotenv==1.0.0
