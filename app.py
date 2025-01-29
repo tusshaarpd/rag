@@ -6,6 +6,13 @@ from sentence_transformers import SentenceTransformer
 import chromadb
 import json
 import os
+import sqlite3
+
+# Check SQLite version
+sqlite_version = sqlite3.sqlite_version
+if tuple(map(int, sqlite_version.split("."))) < (3, 35, 0):
+    st.error(f"Your SQLite version ({sqlite_version}) is outdated. ChromaDB requires SQLite >= 3.35.0. Please update SQLite and restart the app.")
+    st.stop()
 
 # Load embedding model
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
