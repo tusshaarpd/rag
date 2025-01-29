@@ -5,6 +5,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from sentence_transformers import SentenceTransformer
 import chromadb
 import json
+import os
 
 # Load embedding model
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -15,17 +16,31 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name)
 generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
+# Ensure database directory exists
+DB_PATH = "./chroma_db"
+os.makedirs(DB_PATH, exist_ok=True)
+
 # Initialize vector database
-chroma_client = chromadb.PersistentClient(path="./chroma_db")
-collection = chroma_client.get_or_create_collection("space_encyclopedia")
+try:
+    chroma_client = chromadb.PersistentClient(path=DB_PATH)
+    collection = chroma_client.get_or_create_collection("space_encyclopedia")
+except Exception as e:
+    st.error(f"ChromaDB initialization failed: {e}")
+    chroma_client = chromadb.Client()  # Fallback to in-memory mode
+    collection = chroma_client.create_collection("space_encyclopedia")
 
 # Function to load documents into ChromaDB
 def load_documents():
-    with open("space_encyclopedia.json", "r") as f:
-        documents = json.load(f)
-    for doc in documents:
-        embedding = embedding_model.encode(doc["text"]).tolist()
-        collection.add(documents=[{"id": doc["id"], "text": doc["text"], "embedding": embedding}])
+    try:
+        with open("space_encyclopedia.json", "r") as f:
+            documents = json.load(f)
+        for doc in documents:
+            embedding = embedding_model.encode(doc["text"]).tolist()
+            collection.add(documents=[{"id": doc["id"], "text": doc["text"], "embedding": embedding}])
+    except FileNotFoundError:
+        st.warning("Document file not found. Please add space_encyclopedia.json.")
+    except Exception as e:
+        st.error(f"Error loading documents: {e}")
 
 # Load documents if database is empty
 if len(collection.get()) == 0:
@@ -36,16 +51,19 @@ st.title("RAG Model for Space Encyclopedia")
 query = st.text_input("Ask a space-related question:")
 
 if query:
-    # Generate embedding for query
-    query_embedding = embedding_model.encode(query).tolist()
-    
-    # Retrieve similar documents
-    results = collection.query(query_embedding, n_results=3)
-    retrieved_docs = "\n".join([doc["text"] for doc in results["documents"]])
-    
-    # Generate response using LLM
-    input_text = f"Context: {retrieved_docs}\n\nQuestion: {query}\n\nAnswer:"
-    response = generator(input_text, max_length=200, num_return_sequences=1)[0]['generated_text']
-    
-    st.subheader("Answer:")
-    st.write(response)
+    try:
+        # Generate embedding for query
+        query_embedding = embedding_model.encode(query).tolist()
+        
+        # Retrieve similar documents
+        results = collection.query(query_embedding, n_results=3)
+        retrieved_docs = "\n".join([doc["text"] for doc in results["documents"]])
+        
+        # Generate response using LLM
+        input_text = f"Context: {retrieved_docs}\n\nQuestion: {query}\n\nAnswer:"
+        response = generator(input_text, max_length=200, num_return_sequences=1)[0]['generated_text']
+        
+        st.subheader("Answer:")
+        st.write(response)
+    except Exception as e:
+        st.error(f"Error processing query: {e}")
