@@ -1,7 +1,7 @@
 streamlit
-chromadb
+sentence-transformers
 faiss-cpu
 torch
 transformers
-sentence-transformers
-
+langchain
+python-dotenv
