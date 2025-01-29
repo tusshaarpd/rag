@@ -2,8 +2,22 @@
 This application is to demostrate capability of a Rag Model
 Let's break this down into key components:
 
-Document Retrieval: Use an open-source space encyclopedia (e.g., Wikipedia dumps or NASA's open datasets) and store it in a vector database.
-Embedding Model: Use an open-source model like sentence-transformers/all-MiniLM-L6-v2 for vectorization.
-Vector Database: Use FAISS or ChromaDB for storing and retrieving relevant documents.
-LLM for Response Generation: Use Mistral-7B, Llama2, or Phi-2 via transformers and torch (not API-based).
-Frontend with Streamlit: Create an interface where users can ask space-related questions, retrieve relevant documents, and generate responses.
+Retrieval (FAISS + Sentence Transformers):
+
+Uses all-mpnet-base-v2 model for dense vector embeddings
+
+Creates a vector store using FAISS for efficient similarity search
+
+Generation (FLAN-T5):
+
+Uses Google's FLAN-T5 base model for text generation
+
+Combines retrieved context with question for answer generation
+
+Streamlit Interface:
+
+Simple web interface for user interaction
+
+Displays both generated answer and retrieved context
+
+Shows processing time for transparency
